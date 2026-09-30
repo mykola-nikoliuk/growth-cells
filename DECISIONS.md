@@ -25,3 +25,6 @@ Why the component is built the way it is. One line per decision, with the reason
    cell (position, velocity, mark), runs the physics on the CPU and draws on canvas/WebGL.
    Ports carry input changes one way and a throttled count and epoch number back, not every
    frame.
+7. **Known limitation.** Grazing contacts that happen between two steps can be missed. This is
+   visual only: cells split on a timer, not on collisions, so the count and the curve stay
+   exact.
