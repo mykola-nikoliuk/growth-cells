@@ -24,7 +24,8 @@ Why the component is built the way it is. One line per decision, with the reason
 6. **Elm and TypeScript.** Elm holds the inputs and the population count. TypeScript holds every
    cell (position, velocity, mark), runs the physics on the CPU and draws on canvas/WebGL.
    Ports carry input changes one way and a throttled count and epoch number back, not every
-   frame.
+   frame. Rule of thumb: Elm for small data and complex logic, TypeScript for hot loops where
+   mutation wins.
 7. **Known limitation.** Grazing contacts that happen between two steps can be missed. This is
    visual only: cells split on a timer, not on collisions, so the count and the curve stay
    exact.
@@ -34,3 +35,6 @@ Why the component is built the way it is. One line per decision, with the reason
    We send updates on events only. The total changes only when an epoch changes, and the marked
    count only when the user taps. That guarantees data arrives without delay and without
    redundancy, compared to polling on a timer.
+9. **Population limit.** `maxCells` = 16384 is close to the limit for low-end devices at 60 fps. Also, at
+   16k cells the radius is about 2 px, so more cells would blur into one solid area instead of
+   separate objects.
