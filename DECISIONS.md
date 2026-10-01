@@ -28,3 +28,9 @@ Why the component is built the way it is. One line per decision, with the reason
 7. **Known limitation.** Grazing contacts that happen between two steps can be missed. This is
    visual only: cells split on a timer, not on collisions, so the count and the curve stay
    exact.
+8. **Ports.** Elm → TS: `restart` (the whole config, only when a setting that can't change live
+   changes), `update` (split chance and period), `pause`, `resume`, `markCells n`.
+   TS → Elm: `epochChanged {epoch, total, marked}` and `cellsMarked {marked}`.
+   We send updates on events only. The total changes only when an epoch changes, and the marked
+   count only when the user taps. That guarantees data arrives without delay and without
+   redundancy, compared to polling on a timer.
