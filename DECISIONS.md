@@ -38,3 +38,8 @@ Why the component is built the way it is. One line per decision, with the reason
 9. **Population limit.** `maxCells` = 16384 is close to the limit for low-end devices at 60 fps. Also, at
    16k cells the radius is about 2 px, so more cells would blur into one solid area instead of
    separate objects.
+10. **Tile grid.** Rebuild the tile grid every frame instead of updating it incrementally. Every
+    cell moves every frame, so the grid changes almost entirely anyway, and rebuilding it is
+    simpler and faster than removing each cell from its old tile and adding it to the new one.
+    Tiles hold arrays instead of a `Set`: arrays are much faster because they don't hash on every
+    add and delete, and an array is reset with `a.length = 0`.
