@@ -54,20 +54,19 @@ export function createWorld(options: WorldOptions): World {
   const shiftX = (width - startCellsCols * diameter) / 2;
   const shiftY = (height - startCellsRows * diameter) / 2;
 
-  for (let col = 0; col < startCellsCols; col++) {
-    for (let row = 0; row < startCellsRows; row++) {
-      if (cells.length === options.startCells) continue;
+  for (let i = 0; i < options.startCells; i++) {
+    const row = Math.floor(i / startCellsCols);
+    const col = i % startCellsCols;
 
-      cells.push({
-        id: cells.length,
-        x: shiftX + col * diameter + radius,
-        y: shiftY + row * diameter + radius,
-        vx: 0,
-        vy: 0,
-        radius,
-        marked: false,
-      });
-    }
+    cells.push({
+      id: cells.length,
+      x: shiftX + col * diameter + radius,
+      y: shiftY + row * diameter + radius,
+      vx: 0,
+      vy: 0,
+      radius,
+      marked: false,
+    });
   }
 
   return {

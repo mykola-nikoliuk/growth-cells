@@ -49,8 +49,8 @@ describe('createWorld', () => {
     expect(createWorld({ ...options, startCells: 5 }).cells).toHaveLength(5);
   });
 
-  it('places the starting cells inside the board without overlaps', () => {
-    const { cells } = createWorld({ ...options, startCells: 9 });
+  it.each([5, 9])('places %i starting cells inside the board without overlaps', (startCells) => {
+    const { cells } = createWorld({ ...options, startCells });
     for (const a of cells) {
       expect(a.x - a.radius).toBeGreaterThanOrEqual(0);
       expect(a.x + a.radius).toBeLessThanOrEqual(390);
