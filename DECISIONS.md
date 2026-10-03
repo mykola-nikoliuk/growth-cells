@@ -53,3 +53,10 @@ Why the component is built the way it is. One line per decision, with the reason
 14. **Fixed timestep.** We use a fixed timestep instead of a delta to keep the output predictable
     and avoid tunnelling. Limiting the steps the accumulator may run per frame guarantees that on a
     slow machine unprocessed time never keeps piling up.
+15. **Cell size.** The diameter starts at `floor(sqrt(width * height / maxCells))`: each cell gets
+    a square, the worst case, since circles may pack tighter but are not guaranteed to. If the
+    squares still do not fit in whole rows and columns, reduce the diameter by one pixel and check
+    again until they do: the edges waste space, which matters when there are few cells.
+16. **Max speed.** The speed limit is `radius / 30` per step, which is one diameter per second at
+    60 fps. The radius is only the safety bound against tunnelling; these are cells, not molecules,
+    so they should drift calmly.
