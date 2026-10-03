@@ -45,3 +45,6 @@ Why the component is built the way it is. One line per decision, with the reason
     add and delete, and an array is reset with `a.length = 0`.
 11. **Walls.** Cells are clamped back inside right away. Overlaps that this leaves are fixed in the
     next frame, so one push does not set off a chain of corrections within the same frame.
+12. **Speed.** Speed is clamped after collisions, and small random kicks keep cells moving. The demo
+    is about growth, not mechanics: the count runs on a timer, so the physics only has to keep
+    cells apart and moving naturally, and the energy a clamp loses is not visible.
