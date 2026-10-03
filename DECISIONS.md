@@ -50,3 +50,6 @@ Why the component is built the way it is. One line per decision, with the reason
     cells apart and moving naturally, and the energy a clamp loses is not visible.
 13. **Pairs.** Each pair is handled once: only when `a.id < b.id`. Unlike a "done" flag, this keeps
     no state that has to be reset every frame, and it also skips a cell meeting itself.
+14. **Fixed timestep.** We use a fixed timestep instead of a delta to keep the output predictable
+    and avoid tunnelling. Limiting the steps the accumulator may run per frame guarantees that on a
+    slow machine unprocessed time never keeps piling up.
