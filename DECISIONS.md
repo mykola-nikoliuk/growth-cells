@@ -10,53 +10,50 @@ Why the component is built the way it is. One line per decision, with the reason
    cell is only checked against cells in its own tile and the 8 around it; cells further away
    cannot touch. A cell moves less than its radius per step, so two cells never tunnel through
    each other.
-3. **Cell size.** Once the inputs are known, the cell radius is set so that the largest possible
-   population (start · 2^epochs) fits the vessel, allowing for loose packing (about 60–70 % of
-   the area). The last split always fits on screen.
-4. **API.** One interface shared by learning designers, the LLM content agent and the tutor:
+3. **API.** One interface shared by learning designers, the LLM content agent and the tutor:
    config in (start cell count, epochs, split chance, split period), events out (target
    population reached, epoch finished), and state plus commands for the tutor (read the
    population, pause, mark a cell). The config is validated with errors precise enough for an
    LLM to fix.
-5. **Pointer and touch.** A pointer or a finger is a circle, so hit-testing uses the same grid
+4. **Pointer and touch.** A pointer or a finger is a circle, so hit-testing uses the same grid
    and distance check as collisions, scanning as many tiles as its radius needs. A finger gets
    a larger radius than a mouse, because it is less precise and hides what it touches.
-6. **Elm and TypeScript.** Elm holds the inputs and the population count. TypeScript holds every
+5. **Elm and TypeScript.** Elm holds the inputs and the population count. TypeScript holds every
    cell (position, velocity, mark), runs the physics on the CPU and draws on canvas/WebGL.
    Ports carry input changes one way and a throttled count and epoch number back, not every
    frame. Rule of thumb: Elm for small data and complex logic, TypeScript for hot loops where
    mutation wins.
-7. **Known limitation.** Grazing contacts that happen between two steps can be missed. This is
+6. **Known limitation.** Grazing contacts that happen between two steps can be missed. This is
    visual only: cells split on a timer, not on collisions, so the count and the curve stay
    exact.
-8. **Ports.** Elm → TS: `restart` (the whole config, only when a setting that can't change live
+7. **Ports.** Elm → TS: `restart` (the whole config, only when a setting that can't change live
    changes), `update` (split chance and period), `pause`, `resume`, `markCells n`.
    TS → Elm: `epochChanged {epoch, total, marked}` and `cellsMarked {marked}`.
    We send updates on events only. The total changes only when an epoch changes, and the marked
    count only when the user taps. That guarantees data arrives without delay and without
    redundancy, compared to polling on a timer.
-9. **Population limit.** `maxCells` = 16384 is close to the limit for low-end devices at 60 fps. Also, at
+8. **Population limit.** `maxCells` = 16384 is close to the limit for low-end devices at 60 fps. Also, at
    16k cells the radius is about 2 px, so more cells would blur into one solid area instead of
    separate objects.
-10. **Tile grid.** Rebuild the tile grid every frame instead of updating it incrementally. Every
-    cell moves every frame, so the grid changes almost entirely anyway, and rebuilding it is
-    simpler and faster than removing each cell from its old tile and adding it to the new one.
-    Tiles hold arrays instead of a `Set`: arrays are much faster because they don't hash on every
-    add and delete, and an array is reset with `a.length = 0`.
-11. **Walls.** Cells are clamped back inside right away. Overlaps that this leaves are fixed in the
+9. **Tile grid.** Rebuild the tile grid every frame instead of updating it incrementally. Every
+   cell moves every frame, so the grid changes almost entirely anyway, and rebuilding it is
+   simpler and faster than removing each cell from its old tile and adding it to the new one.
+   Tiles hold arrays instead of a `Set`: arrays are much faster because they don't hash on every
+   add and delete, and an array is reset with `a.length = 0`.
+10. **Walls.** Cells are clamped back inside right away. Overlaps that this leaves are fixed in the
     next frame, so one push does not set off a chain of corrections within the same frame.
-12. **Speed.** Speed is clamped after collisions, and small random kicks keep cells moving. The demo
+11. **Speed.** Speed is clamped after collisions, and small random kicks keep cells moving. The demo
     is about growth, not mechanics: the count runs on a timer, so the physics only has to keep
     cells apart and moving naturally, and the energy a clamp loses is not visible.
-13. **Pairs.** Each pair is handled once: only when `a.id < b.id`. Unlike a "done" flag, this keeps
+12. **Pairs.** Each pair is handled once: only when `a.id < b.id`. Unlike a "done" flag, this keeps
     no state that has to be reset every frame, and it also skips a cell meeting itself.
-14. **Fixed timestep.** We use a fixed timestep instead of a delta to keep the output predictable
+13. **Fixed timestep.** We use a fixed timestep instead of a delta to keep the output predictable
     and avoid tunnelling. Limiting the steps the accumulator may run per frame guarantees that on a
     slow machine unprocessed time never keeps piling up.
-15. **Cell size.** The diameter starts at `floor(sqrt(width * height / maxCells))`: each cell gets
+14. **Cell size.** The diameter starts at `floor(sqrt(width * height / maxCells))`: each cell gets
     a square, the worst case, since circles may pack tighter but are not guaranteed to. If the
     squares still do not fit in whole rows and columns, reduce the diameter by one pixel and check
     again until they do: the edges waste space, which matters when there are few cells.
-16. **Max speed.** The speed limit is `radius / 30` per step, which is one diameter per second at
+15. **Max speed.** The speed limit is `radius / 30` per step, which is one diameter per second at
     60 fps. The radius is only the safety bound against tunnelling; these are cells, not molecules,
     so they should drift calmly.
