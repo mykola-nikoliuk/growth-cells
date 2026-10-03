@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "lint": "tsc && eslint . && prettier --check . && elm-format --validate src",
     "format": "prettier --write . && elm-format --yes src",
-    "test": "vitest run && elm-test"
+    "test": "vitest run && elm-test",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

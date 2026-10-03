@@ -1,0 +1,5 @@
+#!/bin/sh
+# Blocks the commit unless the whole project lints and every test passes.
+set -e
+yarn -s lint
+yarn -s test
