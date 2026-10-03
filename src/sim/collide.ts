@@ -21,11 +21,9 @@ export function collide(a: Cell, b: Cell): void {
   b.x -= (nx * overlap) / 2;
   b.y -= (ny * overlap) / 2;
 
-  const closingSpeed = (a.vx - b.vx) * nx + (a.vy - b.vy) * ny;
-  if (closingSpeed >= 0) return;
-
   const aAlong = a.vx * nx + a.vy * ny;
   const bAlong = b.vx * nx + b.vy * ny;
+  if (aAlong - bAlong >= 0) return;
 
   a.vx += (bAlong - aAlong) * nx;
   a.vy += (bAlong - aAlong) * ny;
