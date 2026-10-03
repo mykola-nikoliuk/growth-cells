@@ -1,4 +1,5 @@
 import type { Cell } from './cell';
+import { clamp } from './utils';
 
 /**
  * The board split into square tiles at least one cell diameter wide, so a cell can only touch
@@ -9,10 +10,6 @@ export interface Grid {
   readonly rows: number;
   readonly tileSize: number;
   readonly tiles: Cell[][];
-}
-
-function clamp(value: number, lower: number, upper = Infinity) {
-  return Math.min(Math.max(value, lower), upper);
 }
 
 /** An empty grid that covers a `width × height` board; edge tiles may stick out past it. */

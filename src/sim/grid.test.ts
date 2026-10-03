@@ -2,7 +2,15 @@ import { describe, expect, it } from 'vitest';
 import type { Cell } from './cell';
 import { createGrid, forEachNear, rebuild, tileIndex } from './grid';
 
-const cell = (x: number, y: number): Cell => ({ x, y, vx: 0, vy: 0, radius: 4, marked: false });
+const cell = (x: number, y: number): Cell => ({
+  id: 0,
+  x,
+  y,
+  vx: 0,
+  vy: 0,
+  radius: 4,
+  marked: false,
+});
 
 const near = (grid: ReturnType<typeof createGrid>, x: number, y: number) => {
   const found: Cell[] = [];

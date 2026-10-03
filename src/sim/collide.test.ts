@@ -3,6 +3,7 @@ import type { Cell } from './cell';
 import { collide, limitSpeed } from './collide';
 
 const cell = (x: number, y: number, vx = 0, vy = 0): Cell => ({
+  id: 0,
   x,
   y,
   vx,

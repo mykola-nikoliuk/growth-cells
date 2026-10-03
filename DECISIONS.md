@@ -48,3 +48,5 @@ Why the component is built the way it is. One line per decision, with the reason
 12. **Speed.** Speed is clamped after collisions, and small random kicks keep cells moving. The demo
     is about growth, not mechanics: the count runs on a timer, so the physics only has to keep
     cells apart and moving naturally, and the energy a clamp loses is not visible.
+13. **Pairs.** Each pair is handled once: only when `a.id < b.id`. Unlike a "done" flag, this keeps
+    no state that has to be reset every frame, and it also skips a cell meeting itself.

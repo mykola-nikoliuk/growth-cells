@@ -23,13 +23,14 @@ export function collide(a: Cell, b: Cell): void {
 
   const aAlong = a.vx * nx + a.vy * ny;
   const bAlong = b.vx * nx + b.vy * ny;
-  if (aAlong - bAlong >= 0) return;
+  const closingSpeed = bAlong - aAlong;
+  if (closingSpeed <= 0) return;
 
-  a.vx += (bAlong - aAlong) * nx;
-  a.vy += (bAlong - aAlong) * ny;
+  a.vx += closingSpeed * nx;
+  a.vy += closingSpeed * ny;
 
-  b.vx += (aAlong - bAlong) * nx;
-  b.vy += (aAlong - bAlong) * ny;
+  b.vx += -closingSpeed * nx;
+  b.vy += -closingSpeed * ny;
 }
 
 /** Scales a cell's velocity down to `max`, keeping its direction. Slower cells are left alone. */
