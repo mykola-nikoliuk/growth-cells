@@ -43,3 +43,5 @@ Why the component is built the way it is. One line per decision, with the reason
     simpler and faster than removing each cell from its old tile and adding it to the new one.
     Tiles hold arrays instead of a `Set`: arrays are much faster because they don't hash on every
     add and delete, and an array is reset with `a.length = 0`.
+11. **Walls.** Cells are clamped back inside right away. Overlaps that this leaves are fixed in the
+    next frame, so one push does not set off a chain of corrections within the same frame.
