@@ -57,3 +57,9 @@ Why the component is built the way it is. One line per decision, with the reason
 15. **Max speed.** The speed limit is `radius / 30` per step, which is one diameter per second at
     60 fps. The radius is only the safety bound against tunnelling; these are cells, not molecules,
     so they should drift calmly.
+16. **Split timer.** The split timer counts steps instead of real time. It guarantees that the
+    simulation stays the same even when the machine cannot keep up: growth slows down together
+    with the physics instead of running ahead of it.
+17. **Where a child appears.** A child spawns very close to its parent, in a random direction, and
+    the physics moves them apart. On the exact same point, `collide` would fall back to pushing
+    along x, so every pair would split horizontally.
