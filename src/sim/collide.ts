@@ -1,7 +1,10 @@
 import type { Cell } from './cell';
 
+const SEPARATION_PER_STEP = 0.1;
+
 /**
- * Pushes two overlapping cells apart along the line between their centres, half each, and if
+ * Pushes two overlapping cells apart along the line between their centres, removing a tenth of
+ * the overlap per step (half from each, so they stay soft and overlaps ease out), and if
  * they are moving towards each other, bounces them like billiard balls of equal mass: they swap
  * the parts of their velocities along that line and keep the parts across it. Cells that do not
  * overlap are left alone.
@@ -16,10 +19,10 @@ export function collide(a: Cell, b: Cell): void {
   const nx = distance ? (a.x - b.x) / distance : 1;
   const ny = distance ? (a.y - b.y) / distance : 0;
   const overlap = a.radius + b.radius - distance;
-  a.x += (nx * overlap) / 2;
-  a.y += (ny * overlap) / 2;
-  b.x -= (nx * overlap) / 2;
-  b.y -= (ny * overlap) / 2;
+  a.x += ((nx * overlap) / 2) * SEPARATION_PER_STEP;
+  a.y += ((ny * overlap) / 2) * SEPARATION_PER_STEP;
+  b.x -= ((nx * overlap) / 2) * SEPARATION_PER_STEP;
+  b.y -= ((ny * overlap) / 2) * SEPARATION_PER_STEP;
 
   const aAlong = a.vx * nx + a.vy * ny;
   const bAlong = b.vx * nx + b.vy * ny;

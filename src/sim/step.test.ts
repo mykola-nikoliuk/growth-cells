@@ -72,7 +72,8 @@ describe('step', () => {
     const a = cell(0, 40, 50, 2, 0);
     const b = cell(1, 50, 50, -2, 0);
     step(world([a, b]), still);
-    expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeCloseTo(10);
+    // They moved to 6 apart; one step removes a tenth of the overlap of 4.
+    expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeCloseTo(6.4);
     expect([a.vx, b.vx]).toEqual([-2, 2]);
   });
 

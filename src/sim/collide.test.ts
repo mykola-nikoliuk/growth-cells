@@ -23,7 +23,7 @@ describe('collide', () => {
     expect(b).toEqual(cell(11, 0, -1, 0));
   });
 
-  it('pushes overlapping cells apart until they just touch, half each', () => {
+  it('leaves cells that just touch where they are', () => {
     const a = cell(0, 0);
     const b = cell(6, 8);
     collide(a, b);
@@ -34,11 +34,12 @@ describe('collide', () => {
     expect(b.y).toBeCloseTo(8);
   });
 
-  it('moves each cell by half the overlap along the line between them', () => {
+  it('removes a tenth of the overlap per step, half from each cell, along the line between them', () => {
     const a = cell(0, 0);
     const b = cell(6, 0);
     collide(a, b);
-    expect([a.x, b.x]).toEqual([-2, 8]);
+    expect(a.x).toBeCloseTo(-0.2);
+    expect(b.x).toBeCloseTo(6.2);
     expect([a.y, b.y]).toEqual([0, 0]);
   });
 
@@ -83,15 +84,30 @@ describe('collide', () => {
     const b = cell(9, 0, 1, 0);
     collide(a, b);
     expect([a.vx, b.vx]).toEqual([-1, 1]);
-    expect(distance(a, b)).toBeCloseTo(10);
+    expect(distance(a, b)).toBeCloseTo(9.1);
   });
 
   it('separates cells that sit exactly on top of each other', () => {
     const a = cell(3, 3);
     const b = cell(3, 3);
     collide(a, b);
-    expect(distance(a, b)).toBeCloseTo(10);
+    expect(distance(a, b)).toBeCloseTo(1);
     expect([a.x, a.y, b.x, b.y].every(Number.isFinite)).toBe(true);
+  });
+});
+
+describe('collide, step after step', () => {
+  it('lets two overlapping cells drift apart until they just touch', () => {
+    const a = cell(0, 0);
+    const b = cell(1, 0);
+    const gaps: number[] = [];
+    for (let i = 0; i < 60; i++) {
+      collide(a, b);
+      gaps.push(distance(a, b));
+    }
+    expect(gaps.every((gap, i) => i === 0 || gap > (gaps[i - 1] ?? 0))).toBe(true);
+    expect(distance(a, b)).toBeGreaterThan(9.9);
+    expect(distance(a, b)).toBeLessThanOrEqual(10);
   });
 });
 

@@ -67,3 +67,7 @@ Why the component is built the way it is. One line per decision, with the reason
     total area of the original cell. The radius then grows linearly from `radius / sqrt(2)` back
     to the full radius over the epoch, capped at full, so a cell that split is full size again by
     the next split. Only cells that split shrink and grow; the rest stay full.
+19. **Soft collisions.** After testing, we decided on soft collisions: each step removes only a
+    tenth of the overlap, so cells sink into each other a little and ease apart. It looks better
+    and closer to the soft bodies of cells, and it makes a split look natural, as one cell coming
+    out of the other instead of jumping apart.
