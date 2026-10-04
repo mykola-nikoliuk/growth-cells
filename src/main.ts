@@ -2,6 +2,7 @@ import { Elm } from './Main.elm';
 import { startLoop } from './app/loop';
 import { draw, fitCanvas } from './app/render';
 import { createGrowth, grow } from './sim/growth';
+import { growCells, growthPerStep } from './sim/size';
 import { step } from './sim/step';
 import { createWorld } from './sim/world';
 
@@ -32,10 +33,14 @@ const growth = createGrowth(
   DEFAULT_CONFIG.splitChance,
 );
 
+const fullRadius = world.cells[0]?.radius ?? 0;
+const perStep = growthPerStep(fullRadius, growth.stepsPerEpoch);
+
 startLoop(
   () => {
     step(world, Math.random);
     grow(growth, world.cells, Math.random);
+    growCells(world.cells, fullRadius, perStep);
   },
   () => draw(context, world),
 );

@@ -4,9 +4,11 @@ const DISTANCE_TO_PARENT = 0.001;
 
 /**
  * One epoch's split: every cell that existed before the call splits with probability `chance`
- * (`random() < chance`); cells born in this call do not split again. The child takes the next
- * free id, the parent's radius, velocity and mark (so a marked cell's whole family stays marked), and sits a tiny distance from the parent in a random
- * direction, so the physics pushes the two apart along a random line.
+ * (`random() < chance`); cells born in this call do not split again. A split shrinks the parent to
+ * `radius / sqrt(2)`, keeping the total area. The child takes the next free id, the parent's new
+ * radius, its velocity and its mark (so a marked cell's whole family stays marked), and sits a
+ * tiny distance from the parent in a random direction, so the physics pushes the two apart along
+ * a random line.
  */
 export function split(cells: Cell[], chance: number, random: () => number): void {
   const { length } = cells;
@@ -17,6 +19,8 @@ export function split(cells: Cell[], chance: number, random: () => number): void
     const angle = random() * 2 * Math.PI;
     const dx = Math.cos(angle) * DISTANCE_TO_PARENT;
     const dy = Math.sin(angle) * DISTANCE_TO_PARENT;
+
+    cell.radius = cell.radius / Math.sqrt(2);
 
     cells.push({
       id: cells.length,

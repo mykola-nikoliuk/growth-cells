@@ -54,14 +54,20 @@ describe('split', () => {
     expect(cells.map((c) => c.id)).toEqual([0, 1, 2, 3]);
   });
 
-  it('places a child next to its parent but not on it, with the same size and velocity', () => {
+  it('halves the area of both the parent and the child', () => {
+    const cells = [cell(0)];
+    split(cells, 1, Math.random);
+    expect(cells.map((c) => c.radius)).toEqual([5 / Math.SQRT2, 5 / Math.SQRT2]);
+  });
+
+  it('places a child next to its parent but not on it, with its size and velocity', () => {
     const cells = [cell(0, 20, 30)];
     split(cells, 1, sequence(0, 0.3));
     const born = child(cells);
     const gap = Math.hypot(born.x - 20, born.y - 30);
     expect(gap).toBeGreaterThan(0);
     expect(gap).toBeLessThan(1);
-    expect([born.radius, born.vx, born.vy, born.marked]).toEqual([5, 1, -1, false]);
+    expect([born.radius, born.vx, born.vy, born.marked]).toEqual([5 / Math.SQRT2, 1, -1, false]);
   });
 
   it('passes the mark on, so the whole family of a marked cell stays marked', () => {
