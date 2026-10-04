@@ -34,7 +34,7 @@ describe('createWorld', () => {
     const world = createWorld(options);
     expect(world.cells[0]?.radius).toBe(32.5);
     expect(world.grid.tileSize).toBe(65);
-    expect(world.maxSpeed).toBeCloseTo(32.5 / 30);
+    expect(world.maxSpeed).toBeCloseTo(32.5 / 15);
     expect([world.width, world.height]).toEqual([390, 844]);
   });
 

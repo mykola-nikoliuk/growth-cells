@@ -37,7 +37,7 @@ export function cellDiameter(width: number, height: number, maxCells: number): n
 
 /**
  * A world whose cells are sized so the whole population fits, standing still in a neat grid in
- * the middle of the board. Tiles are one diameter wide; the speed limit is a thirtieth of the
+ * the middle of the board. Tiles are one diameter wide; the speed limit is a fifteenth of the
  * radius per step.
  */
 export function createWorld(options: WorldOptions): World {
@@ -46,7 +46,7 @@ export function createWorld(options: WorldOptions): World {
   const radius = diameter / 2;
   const cells: Cell[] = [];
   const grid = createGrid(width, height, diameter);
-  const maxSpeed = radius / 30;
+  const maxSpeed = radius / 15;
   const kick = maxSpeed / 10;
 
   const startCellsRows = Math.min(grid.rows, Math.ceil(Math.sqrt(options.startCells)));
