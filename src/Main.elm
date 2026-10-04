@@ -1,4 +1,4 @@
-module Main exposing (init, main, title, view)
+port module Main exposing (init, main, title, view)
 
 import Browser
 import Config exposing (Config)
@@ -44,7 +44,10 @@ init : Value -> ( Model, Cmd Never )
 init flags =
     case Config.decode flags of
         Ok config ->
-            ( Ready config, Cmd.none )
+            ( Ready config, restart config )
 
         Err errors ->
             ( Invalid errors, Cmd.none )
+
+
+port restart : Config -> Cmd msg

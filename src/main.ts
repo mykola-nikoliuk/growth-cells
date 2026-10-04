@@ -1,4 +1,4 @@
-import { Elm } from './Main.elm';
+import { type Config, Elm } from './Main.elm';
 import { startLoop } from './app/loop';
 import { draw, fitCanvas } from './app/render';
 import { createGrowth, grow } from './sim/growth';
@@ -11,36 +11,40 @@ const DEFAULT_CONFIG = { startCells: 4, epochs: 10, splitChance: 1, splitPeriod:
 
 const node = document.getElementById('app');
 if (!node) throw new Error('No #app element');
-Elm.Main.init({ node, flags: DEFAULT_CONFIG });
 
-const canvas = document.getElementById('board');
-if (!(canvas instanceof HTMLCanvasElement)) throw new Error('No #board canvas');
-const context = canvas.getContext('2d');
-if (!context) throw new Error('No 2D context');
+const board = document.getElementById('board');
+if (!(board instanceof HTMLCanvasElement)) throw new Error('No #board canvas');
+const canvas: HTMLCanvasElement = board;
+const maybeContext = canvas.getContext('2d');
+if (!maybeContext) throw new Error('No 2D context');
+const context: CanvasRenderingContext2D = maybeContext;
 
-fitCanvas(canvas, context);
-// Until the ports exist, the population limit is worked out here from the default config.
-const world = createWorld({
-  width: canvas.clientWidth,
-  height: canvas.clientHeight,
-  startCells: DEFAULT_CONFIG.startCells,
-  maxCells: DEFAULT_CONFIG.startCells * 2 ** DEFAULT_CONFIG.epochs,
-});
+let stop = () => {};
 
-const growth = createGrowth(
-  DEFAULT_CONFIG.epochs,
-  DEFAULT_CONFIG.splitPeriod,
-  DEFAULT_CONFIG.splitChance,
-);
+/** Throws away the running simulation and starts a new one from a config Elm has validated. */
+function restart(config: Config): void {
+  stop();
+  fitCanvas(canvas, context);
 
-const fullRadius = world.cells[0]?.radius ?? 0;
-const perStep = growthPerStep(fullRadius, growth.stepsPerEpoch);
+  const world = createWorld({
+    width: canvas.clientWidth,
+    height: canvas.clientHeight,
+    startCells: config.startCells,
+    maxCells: config.startCells * 2 ** config.epochs,
+  });
+  const growth = createGrowth(config.epochs, config.splitPeriod, config.splitChance);
+  const fullRadius = world.cells[0]?.radius ?? 0;
+  const perStep = growthPerStep(fullRadius, growth.stepsPerEpoch);
 
-startLoop(
-  () => {
-    step(world, Math.random);
-    grow(growth, world.cells, Math.random);
-    growCells(world.cells, fullRadius, perStep);
-  },
-  () => draw(context, world),
-);
+  stop = startLoop(
+    () => {
+      step(world, Math.random);
+      grow(growth, world.cells, Math.random);
+      growCells(world.cells, fullRadius, perStep);
+    },
+    () => draw(context, world),
+  );
+}
+
+const app = Elm.Main.init({ node, flags: DEFAULT_CONFIG });
+app.ports.restart.subscribe(restart);
