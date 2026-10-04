@@ -1,5 +1,7 @@
+import { STEPS_PER_SECOND } from '../sim/growth';
+
 /** One simulation step: the physics always advances by this much, whatever the frame rate. */
-export const STEP_MS = 1000 / 60;
+export const STEP_MS = 1000 / STEPS_PER_SECOND;
 
 /** The most steps one frame may run, so a slow frame cannot snowball into slower ones. */
 export const MAX_STEPS = 4;

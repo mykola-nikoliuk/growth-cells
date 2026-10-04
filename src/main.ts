@@ -1,6 +1,7 @@
 import { Elm } from './Main.elm';
 import { startLoop } from './app/loop';
 import { draw, fitCanvas } from './app/render';
+import { createGrowth, grow } from './sim/growth';
 import { step } from './sim/step';
 import { createWorld } from './sim/world';
 
@@ -25,7 +26,16 @@ const world = createWorld({
   maxCells: DEFAULT_CONFIG.startCells * 2 ** DEFAULT_CONFIG.epochs,
 });
 
+const growth = createGrowth(
+  DEFAULT_CONFIG.epochs,
+  DEFAULT_CONFIG.splitPeriod,
+  DEFAULT_CONFIG.splitChance,
+);
+
 startLoop(
-  () => step(world, Math.random),
+  () => {
+    step(world, Math.random);
+    grow(growth, world.cells, Math.random);
+  },
   () => draw(context, world),
 );
