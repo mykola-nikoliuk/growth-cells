@@ -39,7 +39,13 @@ function restart(config: Config): void {
   stop = startLoop(
     () => {
       step(world, Math.random);
-      grow(growth, world.cells, Math.random);
+      if (grow(growth, world.cells, Math.random)) {
+        app.ports.epochChanged.send({
+          epoch: growth.epoch,
+          total: world.cells.length,
+          marked: world.cells.filter((cell) => cell.marked).length,
+        });
+      }
       growCells(world.cells, fullRadius, perStep);
     },
     () => draw(context, world),
@@ -48,3 +54,6 @@ function restart(config: Config): void {
 
 const app = Elm.Main.init({ node, flags: DEFAULT_CONFIG });
 app.ports.restart.subscribe(restart);
+
+// In development, `app` is reachable from the browser console, so ports can be tried by hand.
+if (import.meta.env.DEV) Object.assign(window, { app });
